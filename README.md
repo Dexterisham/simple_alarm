@@ -104,26 +104,4 @@ del alarm.spec
 
 ---
 
-## 🛠️ Developer Reference (Optional)
 
-### CLI Command Options
-```text
-usage: simple-alarm [-h] [-b] [--daemon-wait EPOCH_TIME] [--trigger] [time_input]
-
-positional arguments:
-  time_input            Alarm time or duration (e.g. 10s, 5m, 14:30)
-
-options:
-  -h, --help            show this help message and exit
-  -b, --background      Run the alarm waiting process in the background
-  --daemon-wait EPOCH_TIME
-                        Internal: wait silently in background until timestamp
-  --trigger             Internal: trigger foreground alarm and sound
-```
-
-### Rebuilding Standalone Executable
-If you modify the source code, rebuild the EXE using:
-```bash
-pip install pyinstaller
-pyinstaller --onefile alarm.py
-```
