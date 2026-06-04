@@ -87,21 +87,5 @@ Press Enter to Dismiss, or type 's' to Snooze (5 min):
 
 ---
 
-## 🗑️ Cleanup & Uninstall
-
-### To Uninstall the Global Package:
-```powershell
-pip uninstall simple-alarm -y
-rmdir /s /q simple_alarm.egg-info
 ```
-
-### To Delete Built Executable & Temporary Files:
-```powershell
-rmdir /s /q build
-rmdir /s /q dist
-del alarm.spec
-```
-
----
-
 
