@@ -7,7 +7,7 @@ A lightweight, command-line interface (CLI) alarm clock application for Windows.
 ## 🚀 Quick Start (Choose How to Run)
 
 ### Option 1: Standalone Executable (Easiest - No Python Installation Needed!)
-We have pre-compiled the alarm clock into a single executable located in the `dist` folder.
+We have pre-compiled the alarm clock into a standalone executable. You can access it directly here: **[alarm.exe](dist/alarm.exe)**.
 
 1. Open PowerShell or Command Prompt.
 2. Run the executable:
