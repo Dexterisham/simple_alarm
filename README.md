@@ -1,112 +1,129 @@
 # Simple CLI Alarm Clock
 
-A lightweight, command-line interface (CLI) alarm clock application written in Python. It supports scheduling alarms using relative durations (e.g., `10s`, `5m`, `1h 30m`) or absolute clock times (e.g., `14:30`, `2:30 PM`), displaying a live terminal countdown ticker, running as a background daemon process, and automatically opening a new interactive terminal window when the alarm is triggered.
-
-> [!IMPORTANT]
-> **Platform Support**: This application uses Python's built-in `winsound` library for audio alarms and Windows process creation flags to spawn new terminal consoles. It is designed specifically for **Microsoft Windows** operating systems.
+A lightweight, command-line interface (CLI) alarm clock application for Windows. It lets you schedule alarms using relative durations (e.g., `10s`, `5m`, `1h 30m`) or absolute times (e.g., `14:30`, `2:30 PM`). It supports running silently in the background and will automatically pop open a new window when the alarm triggers.
 
 ---
 
-## 📖 User Manual & Usage Guide
+## 🚀 Quick Start (Choose How to Run)
 
-### Foreground Mode
-By default, the alarm runs in your active console window with a live countdown ticker.
+### Option 1: Standalone Executable (Easiest - No Python Installation Needed!)
+We have pre-compiled the alarm clock into a single executable located in the `dist` folder.
 
-```bash
-# Run interactively
-simple-alarm
+1. Open PowerShell or Command Prompt.
+2. Run the executable:
+   ```bash
+   # Run in current terminal (Foreground)
+   .\dist\alarm.exe 10s
 
-# Specify time directly
-simple-alarm 10s
-simple-alarm "2:30 PM"
-```
-
-### Background Daemon Mode
-To schedule the alarm in the background and free up your current terminal console, append the `-b` or `--background` flag:
-
-```bash
-# Schedule alarm in the background for 10 minutes from now
-simple-alarm 10m -b
-
-# Schedule alarm in the background for 6:00 PM local time
-simple-alarm "18:00" -b
-```
-
-Once scheduled:
-1. The command will output a confirmation and exit immediately.
-2. A background python process runs silently waiting for the alarm time.
-3. When the alarm triggers, a new terminal window will pop open, start beeping, and prompt you:
-   ```text
-   ========================================
-   !!!  ALARM TRIGGERED!  !!!
-   ========================================
-
-   Press Enter to Dismiss, or type 's' to Snooze (5 min):
+   # Run silently in background (Spawns a window when finished!)
+   .\dist\alarm.exe 10s -b
    ```
 
-### 🛠️ Interactive Actions
+---
 
-Once the alarm window triggers:
-1. **Snooze**: Type `s` and press **Enter**. The beep stops, a new background daemon is automatically scheduled for 5 minutes later, and the current console window closes.
-2. **Dismiss**: Press **Enter** (with no text) to stop the sound and exit the application.
-3. **Exit Early**: You can press `Ctrl + C` at any point during the countdown or alarm ring to exit the application gracefully.
+### Option 2: Running with Python Directly (No Installation Needed)
+If you have Python installed, you can run the script file directly.
 
-### 🔍 CLI Option Reference
+1. Open PowerShell or Command Prompt in this folder.
+2. Run the script:
+   ```bash
+   # Run in current terminal (Foreground)
+   python alarm.py 10s
 
+   # Run silently in background (Spawns a window when finished!)
+   python alarm.py 10s -b
+   ```
+
+---
+
+### Option 3: Global Installation (Run from anywhere on your computer)
+You can install the app globally so you can type `simple-alarm` in any folder or terminal.
+
+1. Open terminal and run:
+   ```bash
+   pip install .
+   ```
+2. Now, you can run it from any terminal session:
+   ```bash
+   # Run in current terminal (Foreground)
+   simple-alarm 10s
+
+   # Run silently in background (Spawns a window when finished!)
+   simple-alarm 10s -b
+   ```
+
+---
+
+## ⏱️ Alarm Time Formats
+
+When running the alarm, you can specify times in these formats:
+
+* **Seconds**: `10s` (goes off in 10 seconds)
+* **Minutes**: `5m` (goes off in 5 minutes)
+* **Hours & Minutes**: `1h 30m` (goes off in 1.5 hours)
+* **Numbers only**: `15` (defaults to 15 minutes)
+* **Clock Time (24-Hour)**: `14:30` (goes off at exactly 2:30 PM local time)
+* **Clock Time (12-Hour)**: `2:30 PM` or `2:30PM`
+
+> [!TIP]
+> If you run the command without specifying any time arguments (e.g., just type `simple-alarm` or `.\dist\alarm.exe`), the program will interactively ask you to type the alarm time.
+
+---
+
+## 🔔 Alarm Control Actions
+
+When the alarm finishes waiting, it will ring and show:
+```text
+========================================
+!!!  ALARM TRIGGERED!  !!!
+========================================
+
+Press Enter to Dismiss, or type 's' to Snooze (5 min):
+```
+
+* **Snooze**: Type `s` and press **Enter**. The alarm turns off, reschedules a new background wait for **5 minutes**, and the window closes.
+* **Dismiss**: Just press **Enter** (no text). The alarm turns off and exits.
+* **Stop Early**: Press `Ctrl + C` in the terminal at any time.
+
+---
+
+## 🗑️ Cleanup & Uninstall
+
+### To Uninstall the Global Package:
+```powershell
+pip uninstall simple-alarm -y
+rmdir /s /q simple_alarm.egg-info
+```
+
+### To Delete Built Executable & Temporary Files:
+```powershell
+rmdir /s /q build
+rmdir /s /q dist
+del alarm.spec
+```
+
+---
+
+## 🛠️ Developer Reference (Optional)
+
+### CLI Command Options
 ```text
 usage: simple-alarm [-h] [-b] [--daemon-wait EPOCH_TIME] [--trigger] [time_input]
 
-Simple CLI Alarm Clock
-
 positional arguments:
-  time_input            Alarm time (e.g. 14:30, 2:30 PM) or duration (e.g. 10s, 5m)
+  time_input            Alarm time or duration (e.g. 10s, 5m, 14:30)
 
 options:
   -h, --help            show this help message and exit
   -b, --background      Run the alarm waiting process in the background
   --daemon-wait EPOCH_TIME
-                        Internal use: wait silently until epoch timestamp, then trigger alarm console
-  --trigger             Internal use: trigger foreground alarm and sound
+                        Internal: wait silently in background until timestamp
+  --trigger             Internal: trigger foreground alarm and sound
 ```
 
----
-
-## ⚡ Features
-
-- 🕒 **Flexible Time Parsing**: Set alarms using relative durations (seconds, minutes, hours) or standard absolute time formats (12-hour AM/PM and 24-hour clocks).
-- 👤 **Interactive or Direct CLI**: Run without arguments to enter time interactively, or supply the time directly as a command-line argument.
-- ⚙️ **Background Daemon Process**: Schedule alarms to run completely in the background, freeing up your active terminal shell immediately.
-- 🖥️ **Auto-Console Spawning**: When a background alarm goes off, a new, interactive terminal console window automatically pops open to prompt you.
-- 🔔 **Background Audio Alert**: Plays continuous beep sounds in a background thread when the alarm goes off.
-- 💤 **Snooze & Dismiss**: Snooze the alarm for 5 minutes (which spawns a new background wait process and automatically closes the current window) or dismiss it entirely.
-- 📦 **Globally Installable**: Packaged with `pyproject.toml` so you can install and use it as a global CLI command (`simple-alarm`).
-
----
-
-## 📋 Installation
-
-1. **Prerequisites**: Ensure you have Python 3.6 or newer installed on Windows.
-2. **Global Installation**:
-   Open a terminal (PowerShell or Command Prompt) in the directory containing the project, and run:
-   ```bash
-   pip install .
-   ```
-   *Tip: For developers, install in editable mode:*
-   ```bash
-   pip install -e .
-   ```
-3. Once installed, the application is accessible from anywhere on your system via the command:
-   ```bash
-   simple-alarm
-   ```
-
----
-
-## 🏗️ Code Architecture
-
-The script [alarm.py](file:///d:/Experiments/Alarm%20project/simple_alarm/alarm.py) coordinates execution using four sub-flows:
-
-1. **Main Process (`main()`)**: Parses arguments. If `-b`/`--background` is specified, it spawns a background copy of itself running `--daemon-wait` and exits.
-2. **Daemon Wait Process (`run_daemon_wait()`)**: Runs without a console window (`CREATE_NO_WINDOW`). It sleeps until the target timestamp, then spawns the trigger console.
-3. **Trigger Console (`run_alarm_trigger()`)**: Opens in a new window (`CREATE_NEW_CONSOLE`), playing continuous beeps using the [ring_beeps()](file:///d:/Experiments/Alarm%20project/simple_alarm/alarm.py#L11) thread and prompting the user.
-4. **Snooze loop**: If snoozed inside the trigger console, it starts a new background daemon process for +5 minutes, prints a confirmation, and exits the window.
+### Rebuilding Standalone Executable
+If you modify the source code, rebuild the EXE using:
+```bash
+pip install pyinstaller
+pyinstaller --onefile alarm.py
+```
